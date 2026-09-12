@@ -80,13 +80,13 @@ function recommendation(job) {
   ] };
 }
 async function scanSource(url) {
-  const firecrawlResponse = await fetch('https://api.firecrawl.dev/v1/scrape', {
+  const firecrawlResponse = await fetch('https://api.firecrawl.dev/v2/scrape', {
     method: 'POST', headers: { Authorization: `Bearer ${process.env.FIRECRAWL_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, pageOptions: { onlyMainContent: true }, extractorOptions: { mode: 'llm-extraction', extractionSchema: JOB_SCHEMA, extractionPrompt: EXTRACTION_PROMPT } })
+    body: JSON.stringify({ url, formats: [{ type: 'json', schema: JOB_SCHEMA, prompt: EXTRACTION_PROMPT }], onlyMainContent: true })
   });
   const payload = await firecrawlResponse.json();
   if (!firecrawlResponse.ok || payload.success === false) throw new Error(payload.error || payload.message || 'This page could not be cleanly extracted. Try another public job page.');
-  const extracted = payload.data?.llm_extraction || payload.data?.json || payload.data?.extract || {};
+  const extracted = payload.data?.json || payload.data?.extract || payload.data?.llm_extraction || {};
   const jobs = (Array.isArray(extracted.jobs) ? extracted.jobs : []).map((job) => normalizeJob(job, url)).filter(Boolean);
   return { url, status: jobs.length ? 'Extracted' : 'No jobs found', jobs };
 }

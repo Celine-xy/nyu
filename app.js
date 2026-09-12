@@ -4,6 +4,7 @@ const newsStatus = document.querySelector('#news-status');
 const articleList = document.querySelector('#article-list');
 const deepReadPanel = document.querySelector('#deep-read-panel');
 const deepReadContent = document.querySelector('#deep-read-content');
+const closeDeepReadButton = document.querySelector('#close-deep-read');
 let articles = [];
 
 function setStatus(message, isError = false) { newsStatus.textContent = message; newsStatus.classList.toggle('is-error', isError); }
@@ -46,6 +47,11 @@ async function runDeepRead(article, button) {
   finally { button.disabled = false; }
 }
 
+function closeDeepRead() {
+  deepReadPanel.hidden = true;
+  deepReadContent.replaceChildren();
+}
+
 loadButton.addEventListener('click', async () => {
   loadButton.disabled = true; setStatus('Loading the latest RSS stories…');
   try {
@@ -58,4 +64,5 @@ loadButton.addEventListener('click', async () => {
   finally { loadButton.disabled = false; }
 });
 filterInput.addEventListener('input', renderArticles);
+closeDeepReadButton.addEventListener('click', closeDeepRead);
 renderArticles();

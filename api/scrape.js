@@ -1,8 +1,19 @@
 const MAX_CONTENT_LENGTH = 6000;
 function excerptFrom(content) {
-  const markdown = String(content || '').replace(/\s+$/g, '');
-  const firstHeading = markdown.search(/(?:^|\n)#\s+/);
-  return (firstHeading > 0 ? markdown.slice(firstHeading + 1) : markdown).slice(0, MAX_CONTENT_LENGTH);
+  let text = String(content || '').replace(/\s+$/g, '');
+  const firstHeading = text.search(/(?:^|\n)#\s+/);
+  if (firstHeading >= 0) {
+    const headingEnd = text.indexOf('\n', firstHeading);
+    text = headingEnd >= 0 ? text.slice(headingEnd + 1) : '';
+  }
+  text = text
+    .replace(/\[(?:share (?:on|over) [^\]]+|copy share link)\]\([^)]*\)/gi, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  return text.slice(0, MAX_CONTENT_LENGTH);
 }
 function normalizeResult(data, url) {
   const metadata = data.metadata || {};

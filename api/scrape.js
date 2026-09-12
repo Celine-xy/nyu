@@ -1,7 +1,12 @@
 const MAX_CONTENT_LENGTH = 6000;
+function excerptFrom(content) {
+  const markdown = String(content || '').replace(/\s+$/g, '');
+  const firstHeading = markdown.search(/(?:^|\n)#\s+/);
+  return (firstHeading > 0 ? markdown.slice(firstHeading + 1) : markdown).slice(0, MAX_CONTENT_LENGTH);
+}
 function normalizeResult(data, url) {
   const metadata = data.metadata || {};
-  return { title: metadata.title || data.title || 'Untitled page', domain: new URL(url).hostname, url, description: metadata.description || data.description || '', content: String(data.markdown || data.content || '').replace(/\s+$/g, '').slice(0, MAX_CONTENT_LENGTH) };
+  return { title: metadata.title || data.title || 'Untitled page', domain: new URL(url).hostname, url, description: metadata.description || data.description || '', content: excerptFrom(data.markdown || data.content) };
 }
 module.exports = async function handler(request, response) {
   if (request.method !== 'POST') return response.status(405).json({ error: 'Method not allowed.' });

@@ -30,6 +30,21 @@
         </section>
         <div id="article-list" class="article-list" aria-live="polite"></div>
       </section>
+      <section class="web-explorer" aria-labelledby="web-explorer-heading">
+        <p class="section-kicker">Web Explorer</p>
+        <h2 id="web-explorer-heading">Explore Any Web Page</h2>
+        <p class="explorer-intro">Paste one public webpage URL to retrieve a limited, readable excerpt. This does not search or crawl a site.</p>
+        <form id="explorer-form" class="explorer-form" novalidate>
+          <label for="explorer-url">Public webpage URL</label>
+          <div class="explorer-controls"><input id="explorer-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://example.com/article" /><button id="scrape-page" class="primary-button" type="submit">Scrape Page</button></div>
+        </form>
+        <p id="explorer-status" class="status-message" role="status" aria-live="polite">Enter one URL, then select Scrape Page.</p>
+        <section id="explorer-result" class="explorer-result" aria-labelledby="explorer-result-heading" hidden>
+          <p class="section-kicker">Retrieved page</p>
+          <h3 id="explorer-result-heading">Page result</h3>
+          <div id="explorer-content"></div>
+        </section>
+      </section>
     </main>
     <script src="app.js" defer></script>
   </body>

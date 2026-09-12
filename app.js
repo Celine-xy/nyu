@@ -5,11 +5,29 @@ const articleList = document.querySelector('#article-list');
 const deepReadPanel = document.querySelector('#deep-read-panel');
 const deepReadContent = document.querySelector('#deep-read-content');
 const closeDeepReadButton = document.querySelector('#close-deep-read');
+const explorerForm = document.querySelector('#explorer-form');
+const explorerUrl = document.querySelector('#explorer-url');
+const scrapePageButton = document.querySelector('#scrape-page');
+const explorerStatus = document.querySelector('#explorer-status');
+const explorerResult = document.querySelector('#explorer-result');
+const explorerContent = document.querySelector('#explorer-content');
 let articles = [];
 
 function setStatus(message, isError = false) { newsStatus.textContent = message; newsStatus.classList.toggle('is-error', isError); }
 function formatDate(value) { const date = new Date(value); return value && !Number.isNaN(date.valueOf()) ? date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Date unavailable'; }
 function element(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node; }
+function setExplorerStatus(message, isError = false) { explorerStatus.textContent = message; explorerStatus.classList.toggle('is-error', isError); }
+function renderPageResult(container, page) {
+  const source = element('p', '', page.domain);
+  const pageUrl = element('a', 'page-url', page.url);
+  pageUrl.href = page.url; pageUrl.target = '_blank'; pageUrl.rel = 'noopener noreferrer';
+  const urlLine = element('p', 'page-url-line');
+  urlLine.append(pageUrl);
+  const actions = element('p', '');
+  const original = element('a', 'original-link', 'Open Original Page');
+  original.href = page.url; original.target = '_blank'; original.rel = 'noopener noreferrer'; actions.append(original);
+  container.replaceChildren(element('h3', '', page.title), source, urlLine, ...(page.description ? [element('p', '', page.description)] : []), element('p', 'excerpt', page.content || 'No clean text excerpt was available.'), actions);
+}
 
 function renderArticles() {
   const query = filterInput.value.trim().toLowerCase();
@@ -39,10 +57,7 @@ async function runDeepRead(article, button) {
     const response = await fetch('/api/scrape', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: article.url }) });
     const page = await response.json();
     if (!response.ok) throw new Error(page.error || 'Deep Read could not be completed.');
-    const source = element('p', '', `${page.domain} · `);
-    const original = element('a', 'original-link', 'Open original article');
-    original.href = page.url; original.target = '_blank'; original.rel = 'noopener noreferrer'; source.append(original);
-    deepReadContent.replaceChildren(element('h3', '', page.title), source, ...(page.description ? [element('p', '', page.description)] : []), element('p', 'excerpt', page.content || 'No clean text excerpt was available.'));
+    renderPageResult(deepReadContent, page);
   } catch (error) { deepReadContent.replaceChildren(element('p', 'inline-error', `${error.message} Please try another article.`)); }
   finally { button.disabled = false; }
 }
@@ -51,6 +66,30 @@ function closeDeepRead() {
   deepReadPanel.hidden = true;
   deepReadContent.replaceChildren();
 }
+
+explorerForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const value = explorerUrl.value.trim();
+  if (!value) return setExplorerStatus('Enter a public webpage URL to scrape.', true);
+  try {
+    const parsed = new URL(value);
+    if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('scheme');
+  } catch { return setExplorerStatus('Enter a valid http:// or https:// webpage URL.', true); }
+  scrapePageButton.disabled = true;
+  explorerResult.hidden = false;
+  explorerContent.replaceChildren(element('p', '', `Retrieving ${value}…`));
+  setExplorerStatus('Retrieving one page…');
+  try {
+    const response = await fetch('/api/scrape', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: value }) });
+    const page = await response.json();
+    if (!response.ok) throw new Error(page.error || 'The page could not be retrieved.');
+    renderPageResult(explorerContent, page);
+    setExplorerStatus('Page retrieved successfully.');
+  } catch (error) {
+    explorerContent.replaceChildren(element('p', 'inline-error', `${error.message} Try another public webpage.`));
+    setExplorerStatus('The page could not be retrieved.', true);
+  } finally { scrapePageButton.disabled = false; }
+});
 
 loadButton.addEventListener('click', async () => {
   loadButton.disabled = true; setStatus('Loading the latest RSS stories…');

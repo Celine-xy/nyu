@@ -97,7 +97,7 @@ module.exports = async function handler(request, response) {
   let urls;
   try { urls = validateUrls(request.body?.urls); } catch (error) { return response.status(400).json({ error: error.message }); }
   const settled = await Promise.allSettled(urls.map(scanSource));
-  const sources = settled.map((result, index) => result.status === 'fulfilled' ? result.value : { url: urls[index], status: 'Could not extract', error: 'This page could not be cleanly extracted. Try another public job page.', jobs: [] });
+  const sources = settled.map((result, index) => result.status === 'fulfilled' ? result.value : { url: urls[index], status: 'Could not extract', error: cleanString(result.reason?.message, 240) || 'This page could not be cleanly extracted. Try another public job page.', jobs: [] });
   const jobs = sources.flatMap((source) => source.jobs).map(rankJob).map(recommendation).filter(Boolean).sort((a, b) => b.score - a.score).slice(0, 5);
   if (!sources.some((source) => source.status !== 'Could not extract')) return response.status(502).json({ error: 'None of the supplied pages could be cleanly extracted. Try other public job pages.', sources });
   return response.status(200).json({ jobs, sources });

@@ -34,7 +34,7 @@ function renderSourceStatuses(sources, scanning = false) {
     let normalizedValue = value;
     try { normalizedValue = new URL(value).href; } catch { /* The API will provide the readable validation error. */ }
     const source = sources?.find((item) => item.url === normalizedValue);
-    const text = !value ? 'Waiting' : scanning ? 'Scanning' : source?.status || 'Waiting';
+    const text = !value ? 'Waiting' : scanning ? 'Scanning' : source?.error ? `${source.status}: ${source.error}` : source?.status || 'Waiting';
     jobSourceStatuses.append(element('span', `source-status ${text === 'Could not extract' ? 'is-error' : ''}`, `Source ${index + 1}: ${text}`));
   });
 }

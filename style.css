@@ -1,0 +1,89 @@
+:root {
+  color-scheme: dark;
+  font-family: "Space Grotesk", system-ui, sans-serif;
+  background: #111827;
+  color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 18%, #2dd4bf55 0, transparent 29rem),
+    radial-gradient(circle at 83% 77%, #f9731655 0, transparent 25rem),
+    #111827;
+}
+
+.smoke-test {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 100vh;
+  padding: 3rem 1.5rem 0;
+  text-align: center;
+}
+
+.eyebrow,
+.status,
+.ticker {
+  font-family: "DM Mono", ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  margin: 0 0 1.5rem;
+  color: #99f6e4;
+  font-size: 0.8rem;
+}
+
+.eyebrow span {
+  color: #34d399;
+}
+
+h1 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(3.3rem, 10vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.075em;
+}
+
+.status {
+  margin: 2.25rem 0 5rem;
+  color: #cbd5e1;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+}
+
+.status strong {
+  color: #fb923c;
+}
+
+.ticker {
+  display: flex;
+  gap: 1.5rem;
+  width: calc(100% + 3rem);
+  padding: 1rem;
+  overflow: hidden;
+  background: #fb923c;
+  color: #111827;
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .smoke-test {
+    padding-inline: 1rem;
+  }
+
+  .status {
+    line-height: 1.8;
+  }
+}

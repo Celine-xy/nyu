@@ -1,0 +1,7 @@
+{
+  "name": "ai-news-assistant",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Phase 1 AI News Assistant",
+  "dependencies": { "fast-xml-parser": "^5.11.1" }
+}

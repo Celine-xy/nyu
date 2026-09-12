@@ -3,31 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="A deployment smoke test for the AI News Assistant project."
-    />
-    <title>AI News Assistant | Online</title>
+    <meta name="description" content="A simple briefing of the latest AI news." />
+    <title>AI News Briefing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="smoke-test" aria-labelledby="headline">
-      <p class="eyebrow"><span aria-hidden="true">●</span> Live signal detected</p>
-      <h1 id="headline">Breaking News:<br />Your Website Exists.</h1>
-      <p class="status">Codex <span aria-hidden="true">→</span> GitHub <span aria-hidden="true">→</span> Vercel: <strong>ALIVE</strong></p>
-      <div class="ticker" aria-hidden="true">
-        <span>DEPLOYMENT CONFIRMED</span>
-        <span>•</span>
-        <span>THE INTERNET HAS BEEN INFORMED</span>
-        <span>•</span>
-        <span>DEPLOYMENT CONFIRMED</span>
-      </div>
+    <main class="page-shell">
+      <header class="site-header">
+        <p class="eyebrow"><span aria-hidden="true">●</span> Current signals, no noise</p>
+        <h1>AI News Briefing</h1>
+        <p class="subtitle">RSS tells us what changed. Deep Read lets us inspect one story more closely.</p>
+      </header>
+      <section class="news-radar" aria-labelledby="news-radar-heading">
+        <div class="section-heading">
+          <div><p class="section-kicker">News Radar</p><h2 id="news-radar-heading">Today’s AI coverage</h2></div>
+          <button id="load-news" class="primary-button" type="button">Load Latest News</button>
+        </div>
+        <label class="filter-control" for="keyword-filter"><span>Filter loaded stories</span><input id="keyword-filter" type="search" placeholder="Try “OpenAI”, “policy”, or “robotics”" disabled /></label>
+        <p id="news-status" class="status-message" role="status" aria-live="polite">Load the latest stories from WIRED, TechCrunch, and VentureBeat.</p>
+        <section id="deep-read-panel" class="deep-read-panel" aria-labelledby="deep-read-heading" hidden>
+          <div class="panel-header"><p class="section-kicker">Deep Read</p><h2 id="deep-read-heading">Selected article</h2></div>
+          <div id="deep-read-content"></div>
+        </section>
+        <div id="article-list" class="article-list" aria-live="polite"></div>
+      </section>
     </main>
+    <script src="app.js" defer></script>
   </body>
 </html>
